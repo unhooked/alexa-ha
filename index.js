@@ -41,7 +41,7 @@ app.sessionEnded(function(request,response) {
 app.messages.NO_INTENT_FOUND = "I am uncertain what you mean.  Kindly rephrase...";
 
 // Pre-execution security checks - ensure each requests applicationId / userId / password match configured values
-app.pre = function(request,response,type) {
+app.pre = function(request,response,type) {    
     // Extract values from various levels of the nested request object
     var address = request.data.remoteAddress;
     var password = request.data.password;
@@ -305,7 +305,7 @@ app.intent('SetMode', {
         replyWith('Changing your ' + modeType + ' mode to ' + modeName, response);
     }
     else {
-        replyWith('I could currently set your ' + modeType + ' mode to ' + modeName);
+        replyWith('I cannot currently set your ' + modeType + ' mode to ' + modeName);
     }
 });
 
@@ -347,7 +347,7 @@ app.intent('GetState', {
     return false;
 });
 
-// Set modes (house/lighting/security scenes)
+// Get current mode (house/lighting/security scenes)
 app.intent('GetMode', {
     "slots":{"ModeType":"LITERAL"}
     ,"utterances":config.utterances.GetMode
@@ -380,7 +380,7 @@ app.intent('GetMode', {
     return false;
 });
 
-// Handle arbitrary commands, passed to HA VoiceCommand item which then executes server side rules
+// Handle arbitrary voice commands, passed to HA VoiceCommand item which then executes server side rules
 app.intent('VoiceCMD', {
     "slots":{"Input":"LITERAL"}
     ,"utterances":config.utterances.VoiceCMD
@@ -404,7 +404,7 @@ app.intent('VoiceCMD', {
     return false;
 });
 
-// Research anything via wolfram alpha API calls
+// Research almost anything via wolfram alpha (API Key required)
 app.intent('Research', {
     "slots":{"Question":"LITERAL"}
     ,"utterances":config.utterances.Research
@@ -420,7 +420,7 @@ app.intent('Research', {
         if (err) {
             replyWith('I could not quickly determine an answer to your question', response);
         } else if (msg) {
-            response.say(msg, response);
+            replyWith(msg, response);
         }
     });
     return false;
